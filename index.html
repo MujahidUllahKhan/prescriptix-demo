@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prescriptix SoloDept — Live Demo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#0d1f4e;--teal:#00b4a0;--teal-light:#00d4c0;
+    --crimson:#86001f;--gold:#c49729;
+    --bg:#f5f5f0;--card:#fff;--border:#e8e8e2;
+    --text:#1a1a2e;--muted:#666;--muted2:#999;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+  /* ── NAV ── */
+  nav{background:var(--navy);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+  .nav-logo{display:flex;align-items:center;gap:10px}
+  .nav-bars{display:flex;align-items:flex-end;gap:2px;height:22px}
+  .nb{border-radius:2px 2px 0 0}
+  .nb1{width:6px;height:55%;background:#1a3a7a}
+  .nb2{width:6px;height:78%;background:var(--teal)}
+  .nb3{width:6px;height:100%;background:var(--teal-light);position:relative}
+  .nb3::after{content:'✓';position:absolute;top:-11px;left:50%;transform:translateX(-50%);color:var(--teal-light);font-size:9px;font-weight:700}
+  .nav-title{color:#fff;font-size:15px;font-weight:500}
+  .nav-sub{color:var(--teal);font-size:10px}
+  .nav-tabs{display:flex;gap:4px}
+  .nav-tab{padding:6px 14px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;color:rgba(255,255,255,.6);border:none;background:transparent;transition:.2s}
+  .nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.1);color:#fff}
+  .nav-tab.active{color:var(--teal-light)}
+  .nav-badge{background:var(--teal);color:var(--navy);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:8px}
+
+  /* ── PAGES ── */
+  .page{display:none;padding:24px 32px;max-width:1200px;margin:0 auto}
+  .page.active{display:block}
+
+  /* ── SECTION TITLE ── */
+  .sec-hdr{margin-bottom:20px}
+  .sec-hdr h2{font-size:20px;font-weight:500;color:var(--navy)}
+  .sec-hdr p{font-size:13px;color:var(--muted);margin-top:4px}
+
+  /* ── CARDS ── */
+  .cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .stat-card{background:var(--card);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
+  .stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .stat-val{font-size:24px;font-weight:500;color:var(--navy)}
+  .stat-sub{font-size:10px;margin-top:3px}
+  .up{color:#0F6E56}.down{color:var(--crimson)}
+
+  /* ── TABLE PANEL ── */
+  .panel{background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px}
+  .panel-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .panel-hdr h3{font-size:13px;font-weight:500;color:var(--navy)}
+  .panel-hdr span{font-size:11px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:10px;font-weight:500;letter-spacing:.4px;color:var(--muted);padding:8px 14px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf7}
+  td{padding:9px 14px;font-size:12px;color:var(--text);border-bottom:1px solid var(--border)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafafa}
+  .pill{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:500}
+  .p-ok{background:#EAF3DE;color:#3B6D11}
+  .p-low{background:#FAEEDA;color:#633806}
+  .p-out{background:#FCEBEB;color:#791F1F}
+  .p-teal{background:#E1F5EE;color:#085041}
+  .btn-order{background:var(--teal);color:#fff;border:none;font-size:10px;padding:4px 10px;border-radius:4px;cursor:pointer;font-weight:500;transition:.15s}
+  .btn-order:hover{background:#008f7d}
+  .btn-order.done{background:#EAF3DE;color:#3B6D11;cursor:default}
+
+  /* ── 2-COL LAYOUT ── */
+  .two-col{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-bottom:16px}
+  .ai-box{background:#E1F5EE;border:1px solid #9FE1CB;border-radius:8px;padding:12px 14px;font-size:12px;color:#085041;line-height:1.55}
+  .ai-label{font-size:9px;font-weight:600;letter-spacing:.6px;color:#1D9E75;margin-bottom:6px}
+
+  /* ── FORECAST BARS ── */
+  .forecast-wrap{padding:12px 16px}
+  .fc-label{font-size:11px;color:var(--muted);margin-bottom:10px}
+  .fc-bars{display:flex;align-items:flex-end;gap:5px;height:80px}
+  .fc-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .fc-bar{width:100%;border-radius:3px 3px 0 0;background:var(--teal);opacity:.7;transition:.3s}
+  .fc-bar.peak{opacity:1;background:var(--crimson)}
+  .fc-day{font-size:9px;color:var(--muted)}
+  .fc-controls{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+  .fc-btn{font-size:10px;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--text);transition:.15s}
+  .fc-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  /* ── REVENUE PAGE ── */
+  .revenue-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px}
+  .econ-table{padding:14px 16px}
+  .econ-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--border);font-size:12px}
+  .econ-row:last-child{border-bottom:none}
+  .econ-lbl{color:var(--muted)}
+  .econ-val{font-weight:500;color:var(--navy);font-family:'DM Mono',monospace;font-size:11px}
+  .econ-val.green{color:#0F6E56;background:#EAF3DE;padding:2px 7px;border-radius:4px}
+  .econ-val.red{color:var(--crimson);background:#FCEBEB;padding:2px 7px;border-radius:4px}
+  .tier-highlight{background:#E1F5EE}
+  .chart-wrap{padding:14px 16px}
+  .chart-inner{position:relative;width:100%;height:200px}
+
+  /* ── BUDGET PAGE ── */
+  .budget-controls{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:16px;margin-bottom:16px}
+  .budget-controls h3{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:12px}
+  .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px}
+  .slider-lbl{width:160px;color:var(--muted);flex-shrink:0}
+  .slider-row input[type=range]{flex:1;accent-color:var(--teal)}
+  .slider-val{width:70px;text-align:right;font-weight:500;color:var(--navy);font-family:'DM Mono',monospace;font-size:11px}
+  .budget-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  .result-card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:14px;text-align:center}
+  .result-card.highlight{border-color:var(--teal);background:#E1F5EE}
+  .result-big{font-size:26px;font-weight:500;color:var(--navy)}
+  .result-big.green{color:#0F6E56}
+  .result-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+  .result-note{font-size:10px;color:var(--teal);margin-top:3px;font-weight:500}
+
+  /* ── HERO SECTION (HOME TAB) ── */
+  .hero{background:var(--navy);border-radius:12px;padding:28px 32px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+  .hero-left h1{font-size:26px;font-weight:500;color:#fff;line-height:1.3}
+  .hero-left p{font-size:13px;color:rgba(255,255,255,.65);margin-top:8px;max-width:420px;line-height:1.6}
+  .hero-right{text-align:right}
+  .hero-big{font-size:48px;font-weight:300;color:var(--teal-light);line-height:1}
+  .hero-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+  .hero-pill{display:inline-block;background:rgba(0,212,192,.15);color:var(--teal-light);font-size:11px;padding:4px 12px;border-radius:20px;margin-top:10px;border:1px solid rgba(0,212,192,.3)}
+
+  /* ── PROOF CHIPS ── */
+  .proof-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .proof-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:11px;display:flex;align-items:center;gap:8px}
+  .proof-chip .icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+  .ic-teal{background:#E1F5EE;color:#1D9E75}
+  .ic-navy{background:#E6F1FB;color:#185FA5}
+  .ic-gold{background:#FAEEDA;color:#633806}
+  .ic-red{background:#FCEBEB;color:#791F1F}
+  .proof-chip strong{color:var(--navy)}
+
+  /* ── SELECT ── */
+  select{font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--text);cursor:pointer}
+
+  @media print{body{background:#fff}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-bars">
+      <div class="nb nb1"></div>
+      <div class="nb nb2"></div>
+      <div class="nb nb3"></div>
+    </div>
+    <div>
+      <div class="nav-title">Prescriptix SoloDept</div>
+      <div class="nav-sub">AI Inventory Optimization</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home',this)">Overview</button>
+    <button class="nav-tab" onclick="showPage('dashboard',this)">AI Dashboard</button>
+    <button class="nav-tab" onclick="showPage('revenue',this)">Revenue Model</button>
+    <button class="nav-tab" onclick="showPage('budget',this)">Budget Calculator</button>
+  </div>
+  <div>
+    <span class="nav-badge">Live Demo</span>
+  </div>
+</nav>
+
+<!-- ══ HOME PAGE ══════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div style="max-width:1100px;margin:0 auto;padding-top:8px">
+
+    <div class="hero">
+      <div class="hero-left">
+        <h1>The AI inventory analyst<br>SMBs can finally afford.</h1>
+        <p>We talked to 21 business owners. Three types bleed money every week from bad inventory. Prescriptix fixes that — automatically, 24 hours a day, at $99/month instead of $60K/year.</p>
+        <div class="hero-pill">Seeking $50,000 Seed Investment</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-big">$1.2M</div>
+        <div class="hero-sub">ARR target by Year 3</div>
+        <div style="margin-top:16px">
+          <div style="font-size:28px;font-weight:300;color:#FAC775">82%</div>
+          <div class="hero-sub">Gross Margin</div>
+        </div>
+        <div style="margin-top:12px">
+          <div style="font-size:28px;font-weight:300;color:#fff">14.8×</div>
+          <div class="hero-sub">LTV : CAC</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="proof-row">
+      <div class="proof-chip"><div class="icon ic-teal">21</div><span><strong>Customer interviews</strong> across 6 market segments</span></div>
+      <div class="proof-chip"><div class="icon ic-navy">3</div><span><strong>Validated pain segments</strong>: pharma, auto-parts, food service</span></div>
+      <div class="proof-chip"><div class="icon ic-gold">✓</div><span><strong>Willingness to pay</strong> confirmed by pharma & auto-parts owners</span></div>
+      <div class="proof-chip"><div class="icon ic-red">!</div><span>SMBs over-order <strong>20–30%</strong> — tying up cash they can't afford</span></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <div class="panel">
+        <div class="panel-hdr"><h3>The Problem We Solve</h3></div>
+        <div style="padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7">
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">Hotels & restaurants</strong> — perishable stockouts every busy weekend. Corbett Center couldn't forecast halal chicken demand from Muslim students.</div>
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">Pharma stores</strong> — weather triggers flu/cough surges. Customers leave when shelves are empty. Expired stock written off quarterly.</div>
+          <div><strong style="color:var(--text)">Auto-parts shops</strong> — parts ship from China in 2–4 weeks. Customers who can't wait go to competitors, forever.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><h3>Why Existing Solutions Fail</h3></div>
+        <div style="padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7">
+          <div style="margin-bottom:8px"><strong style="color:var(--crimson)">Spreadsheets</strong> — reactive, no forecasting, relies on gut feel</div>
+          <div style="margin-bottom:8px"><strong style="color:var(--crimson)">Manual analyst hire</strong> — works 9-to-5 only, $60K–$80K/year, one thing at a time</div>
+          <div style="margin-bottom:8px"><strong style="color:var(--crimson)">NetSuite / SAP</strong> — $2,000+/mo, built for corporations</div>
+          <div style="color:var(--teal);font-weight:500"><strong>Prescriptix</strong> — $99/mo, AI-powered, never sleeps</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><h3>Market Opportunity</h3></div>
+        <div style="padding:14px 16px">
+          <div style="margin-bottom:10px">
+            <div style="font-size:18px;font-weight:500;color:var(--navy)">$4.8B <span style="font-size:11px;font-weight:400;color:var(--muted)">TAM</span></div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">~6M US SMBs with inventory challenges</div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div style="font-size:18px;font-weight:500;color:var(--navy)">$240M <span style="font-size:11px;font-weight:400;color:var(--muted)">SAM</span></div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">~400K pharma/auto-parts/food-service SMBs</div>
+          </div>
+          <div>
+            <div style="font-size:18px;font-weight:500;color:var(--teal)">$6M <span style="font-size:11px;font-weight:400;color:var(--muted)">SOM (Year 3)</span></div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">5,000 subscribers @ $100/mo — &lt;1.3% of SAM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ DASHBOARD PAGE ══════════════════════════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="sec-hdr">
+    <h2>AI Inventory Dashboard</h2>
+    <p>Real-time recommendations, demand forecasts, and automated reorder alerts — running 24/7.</p>
+  </div>
+
+  <div class="cards-row">
+    <div class="stat-card"><div class="stat-label">Dead Stock Freed This Month</div><div class="stat-val">$4,320</div><div class="stat-sub up">↑ 22% vs last month</div></div>
+    <div class="stat-card"><div class="stat-label">Stockout Incidents Prevented</div><div class="stat-val">11</div><div class="stat-sub up">↑ AI caught them overnight</div></div>
+    <div class="stat-card"><div class="stat-label">Forecast Accuracy</div><div class="stat-val">91%</div><div class="stat-sub up">↑ 8 pts from last month</div></div>
+    <div class="stat-card"><div class="stat-label">Est. Monthly Savings</div><div class="stat-val">$1,180</div><div class="stat-sub up">vs. manual ordering</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-hdr">
+        <h3>AI Purchase Recommendations</h3>
+        <span>Budget remaining: <strong>$1,240</strong></span>
+      </div>
+      <table>
+        <thead><tr><th>Item</th><th>Stock</th><th>AI Forecast</th><th>Recommend</th><th>Priority</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><strong>Flu Syrup 200ml</strong></td><td><span class="pill p-out">0 units</span></td><td>↑ 40 units/wk</td><td>80 units</td><td><span class="pill p-out">Critical</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
+          <tr><td><strong>Paracetamol 500mg</strong></td><td><span class="pill p-low">12 units</span></td><td>↑ 35 units/wk</td><td>120 units</td><td><span class="pill p-low">High</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
+          <tr><td><strong>Antibiotic Amox 250</strong></td><td><span class="pill p-low">8 units</span></td><td>→ 20 units/wk</td><td>60 units</td><td><span class="pill p-low">High</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
+          <tr><td><strong>Vitamin C 1000mg</strong></td><td><span class="pill p-ok">140 units</span></td><td>→ 18 units/wk</td><td>—</td><td><span class="pill p-ok">OK</span></td><td><button class="btn-order done" disabled>No Action</button></td></tr>
+          <tr><td><strong>Cough Tabs 10-strip</strong></td><td><span class="pill p-out">2 units</span></td><td>↑ 28 units/wk</td><td>90 units</td><td><span class="pill p-out">Critical</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
+          <tr><td><strong>Ibuprofen 400mg</strong></td><td><span class="pill p-low">24 units</span></td><td>→ 22 units/wk</td><td>80 units</td><td><span class="pill p-low">High</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="panel">
+        <div class="panel-hdr">
+          <h3>7-Day Demand Forecast</h3>
+          <select id="prodSel" onchange="updateForecast()">
+            <option>Flu Syrup 200ml</option>
+            <option>Paracetamol 500mg</option>
+            <option>Vitamin C 1000mg</option>
+            <option>Cough Tabs 10-strip</option>
+          </select>
+        </div>
+        <div class="forecast-wrap">
+          <div class="fc-label" id="fc-label">Peak demand: Thu–Fri · Avg 12 units/day</div>
+          <div class="fc-bars" id="fc-bars">
+            <div class="fc-bar-wrap"><div class="fc-bar" style="height:40%"></div><div class="fc-day">Mon</div></div>
+            <div class="fc-bar-wrap"><div class="fc-bar" style="height:55%"></div><div class="fc-day">Tue</div></div>
+            <div class="fc-bar-wrap"><div class="fc-bar" style="height:70%"></div><div class="fc-day">Wed</div></div>
+            <div class="fc-bar-wrap"><div class="fc-bar peak" style="height:100%"></div><div class="fc-day">Thu</div></div>
+            <div class="fc-bar-wrap"><div class="fc-bar peak" style="height:95%"></div><div class="fc-day">Fri</div></div>
+            <div class="fc-bar-wrap"><div class="fc-bar" style="height:80%"></div><div class="fc-day">Sat</div></div>
+            <div class="fc-bar-wrap"><div class="fc-bar" style="height:75%"></div><div class="fc-day">Sun</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><h3>AI Explanation</h3><span class="pill p-teal">Powered by Claude API</span></div>
+        <div style="padding:12px 14px">
+          <div class="ai-label">WHY THIS RECOMMENDATION</div>
+          <div class="ai-box" id="ai-text">Flu Syrup demand will spike 40% this week. A cold front arrives Thursday — historically this drives a 35–45% surge in cold medicine sales. Three nearby schools also reported illness outbreaks. You will stock out by Wednesday at current levels. Ordering 80 units now covers the next 10 days with a 15% safety buffer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REVENUE PAGE ════════════════════════════════════════ -->
+<div class="page" id="page-revenue">
+  <div class="sec-hdr">
+    <h2>Revenue Model & Unit Economics</h2>
+    <p>Tiered SaaS subscription · 82% gross margins · 14.8× LTV:CAC ratio</p>
+  </div>
+
+  <div class="revenue-grid">
+    <div>
+      <div class="panel" style="margin-bottom:12px">
+        <div class="panel-hdr"><h3>3-Year Revenue Projection</h3></div>
+        <div class="chart-wrap"><div class="chart-inner"><canvas id="revenueChart" role="img" aria-label="Bar chart showing revenue growing from $108K in Year 1 to $1.19M in Year 3">Year 1: $108K, Year 2: $420K, Year 3: $1.19M revenue.</canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><h3>Pricing Tiers</h3><span>★ Growth is primary revenue driver</span></div>
+        <table>
+          <thead><tr><th>Tier</th><th>Price</th><th>Target Customer</th><th>Features</th></tr></thead>
+          <tbody>
+            <tr><td>Freemium</td><td>$0/mo</td><td>Trial / micro-SMB</td><td>Manual entry, 24-hr forecast</td></tr>
+            <tr><td>Basic</td><td>$19/mo</td><td>1–2 SKU categories</td><td>Basic alerts, weekly report</td></tr>
+            <tr class="tier-highlight"><td><strong>Growth ★</strong></td><td><strong>$99/mo</strong></td><td>Pharma, auto-parts</td><td>Full AI, seasonal forecasting, PDF reports</td></tr>
+            <tr><td>Premium</td><td>$249/mo</td><td>Multi-location SMB</td><td>Multi-store, API integrations</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="panel">
+        <div class="panel-hdr"><h3>Unit Economics (Growth Tier)</h3></div>
+        <div class="econ-table">
+          <div class="econ-row"><span class="econ-lbl">Revenue per user / month</span><span class="econ-val">$99.00</span></div>
+          <div class="econ-row"><span class="econ-lbl">COGS — Claude API calls</span><span class="econ-val">~$8.00</span></div>
+          <div class="econ-row"><span class="econ-lbl">COGS — Cloud hosting</span><span class="econ-val">~$10.00</span></div>
+          <div class="econ-row"><span class="econ-lbl">Total COGS per user</span><span class="econ-val">~$18.00</span></div>
+          <div class="econ-row"><span class="econ-lbl">Gross margin</span><span class="econ-val green">82%</span></div>
+          <div class="econ-row"><span class="econ-lbl">Customer Acquisition Cost</span><span class="econ-val">$120</span></div>
+          <div class="econ-row"><span class="econ-lbl">Avg retention</span><span class="econ-val">18 months</span></div>
+          <div class="econ-row"><span class="econ-lbl">Lifetime Value (LTV)</span><span class="econ-val">$1,782</span></div>
+          <div class="econ-row"><span class="econ-lbl">LTV : CAC ratio</span><span class="econ-val red">14.8×</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><h3>Revenue Milestones</h3></div>
+        <table>
+          <thead><tr><th></th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr></thead>
+          <tbody>
+            <tr><td>Paying Users</td><td>90</td><td>350</td><td>990</td></tr>
+            <tr><td>ARR</td><td>$108K</td><td>$420K</td><td>$1.19M</td></tr>
+            <tr><td>Gross Margin</td><td>67%</td><td>67%</td><td>82%</td></tr>
+            <tr><td>Gross Profit</td><td>$72K</td><td>$280K</td><td>$975K</td></tr>
+          </tbody>
+        </table>
+        <div style="padding:10px 14px;font-size:10px;color:var(--muted)">Margin increases Yr 3 as fixed infrastructure costs amortize across 990+ users.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BUDGET CALCULATOR PAGE ═════════════════════════════ -->
+<div class="page" id="page-budget">
+  <div class="sec-hdr">
+    <h2>Customer ROI Calculator</h2>
+    <p>See exactly how much Prescriptix saves a real business. Adjust the sliders to match your customer's profile.</p>
+  </div>
+
+  <div class="budget-controls">
+    <h3>Business Profile</h3>
+    <div class="slider-row">
+      <span class="slider-lbl">Annual Inventory Spend</span>
+      <input type="range" min="20000" max="500000" step="5000" value="80000" id="sl-spend" oninput="calcROI()">
+      <span class="slider-val" id="out-spend">$80,000</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-lbl">Over-ordering % (waste)</span>
+      <input type="range" min="10" max="35" step="1" value="25" id="sl-waste" oninput="calcROI()">
+      <span class="slider-val" id="out-waste">25%</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-lbl">Stockout losses / year</span>
+      <input type="range" min="2000" max="80000" step="1000" value="15000" id="sl-stock" oninput="calcROI()">
+      <span class="slider-val" id="out-stock">$15,000</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-lbl">Prescriptix Tier</span>
+      <input type="range" min="0" max="3" step="1" value="2" id="sl-tier" oninput="calcROI()">
+      <span class="slider-val" id="out-tier">Growth ($99/mo)</span>
+    </div>
+  </div>
+
+  <div class="budget-results">
+    <div class="result-card"><div class="result-big" id="r-saved">$20,000</div><div class="result-lbl">Dead stock freed per year</div></div>
+    <div class="result-card"><div class="result-big" id="r-stock">$15,000</div><div class="result-lbl">Stockout losses recovered</div></div>
+    <div class="result-card highlight"><div class="result-big green" id="r-roi">29×</div><div class="result-lbl">Return on Prescriptix investment</div><div class="result-note" id="r-cost">vs. $1,188/year</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hdr"><h3>Compared to Alternatives</h3></div>
+    <table>
+      <thead><tr><th>Solution</th><th>Annual Cost</th><th>Forecasting?</th><th>Availability</th><th>ROI vs this business</th></tr></thead>
+      <tbody>
+        <tr><td>Spreadsheets</td><td>$0</td><td>❌ None</td><td>When you find time</td><td>Baseline</td></tr>
+        <tr><td>Hire data analyst</td><td>$65,000+</td><td>⚠️ Manual</td><td>9-to-5 only</td><td>Negative (adds cost)</td></tr>
+        <tr><td>NetSuite / SAP</td><td>$24,000+/yr</td><td>✅ Yes</td><td>24/7</td><td>Priced out of reach</td></tr>
+        <tr class="tier-highlight"><td><strong>Prescriptix Growth</strong></td><td id="tbl-cost"><strong>$1,188/yr</strong></td><td>✅ AI-powered</td><td><strong>24/7 automated</strong></td><td id="tbl-roi"><strong style="color:#0F6E56">29× ROI</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ── NAV ──────────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'revenue') initRevenueChart();
+}
+
+// ── ORDER BUTTON ──────────────────────────────────────────────
+function markDone(btn) {
+  btn.textContent = '✓ Ordered';
+  btn.classList.add('done');
+  btn.disabled = true;
+}
+
+// ── FORECAST ─────────────────────────────────────────────────
+const fcData = {
+  'Flu Syrup 200ml':    { h:['40%','55%','70%','100%','95%','80%','75%'], peak:'Thu–Fri', avg:12, ai:'Flu Syrup demand will spike 40% this week. A cold front arrives Thursday — historically this drives a 35–45% surge in cold medicine sales. Three nearby schools also reported illness outbreaks. You will stock out by Wednesday at current levels. Ordering 80 units now covers the next 10 days with a 15% safety buffer.', peaks:[3,4] },
+  'Paracetamol 500mg':  { h:['60%','65%','70%','75%','100%','90%','55%'], peak:'Fri', avg:9, ai:'Paracetamol usage tracks flu season closely. Demand peaks Friday as weekend buyers stock up. At 12 remaining units you have 1.3 days of stock left. Ordering 120 units provides a 14-day supply with a 20% safety margin.', peaks:[4] },
+  'Vitamin C 1000mg':   { h:['50%','50%','55%','50%','60%','45%','50%'], peak:'Steady', avg:5, ai:'Vitamin C demand is stable and low-variance. Your current 140 units covers 28 days at this rate. No reorder needed this week. The AI will re-evaluate in 14 days and alert you if the pattern changes.', peaks:[] },
+  'Cough Tabs 10-strip':{ h:['55%','60%','75%','90%','100%','85%','70%'], peak:'Thu–Fri', avg:10, ai:'Cough Tabs closely correlate with cold/flu medicine surges. With only 2 units remaining and peak demand arriving Thursday, you will stock out within 5 hours of opening tomorrow. Order 90 units immediately — this is a same-day priority.', peaks:[3,4] },
+};
+function updateForecast() {
+  const key = document.getElementById('prodSel').value;
+  const d = fcData[key];
+  const bars = document.querySelectorAll('#fc-bars .fc-bar');
+  bars.forEach((b, i) => {
+    b.style.height = d.h[i];
+    b.className = 'fc-bar' + (d.peaks.includes(i) ? ' peak' : '');
+  });
+  document.getElementById('fc-label').textContent = 'Peak demand: ' + d.peak + ' · Avg ' + d.avg + ' units/day';
+  document.getElementById('ai-text').textContent = d.ai;
+}
+
+// ── REVENUE CHART ─────────────────────────────────────────────
+let revenueChartInstance = null;
+function initRevenueChart() {
+  if (revenueChartInstance) return;
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  revenueChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Year 1', 'Year 2', 'Year 3'],
+      datasets: [
+        { label: 'Revenue', data: [108, 420, 1190], backgroundColor: '#86001f', borderRadius: 4 },
+        { label: 'Gross Profit', data: [72, 280, 975], backgroundColor: '#c49729', borderRadius: 4, opacity: .85 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { ticks: { callback: v => '$' + v + 'K', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,.06)' } },
+        x: { ticks: { font: { size: 11, weight: '500' } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── ROI CALCULATOR ────────────────────────────────────────────
+const tierNames = ['Freemium ($0/mo)', 'Basic ($19/mo)', 'Growth ($99/mo)', 'Premium ($249/mo)'];
+const tierCosts = [0, 228, 1188, 2988];
+function calcROI() {
+  const spend = +document.getElementById('sl-spend').value;
+  const waste = +document.getElementById('sl-waste').value;
+  const stock = +document.getElementById('sl-stock').value;
+  const tier  = +document.getElementById('sl-tier').value;
+  const saved = Math.round(spend * waste / 100);
+  const total = saved + stock;
+  const cost  = tierCosts[tier];
+  const roi   = cost > 0 ? Math.round(total / cost) : '∞';
+  document.getElementById('out-spend').textContent = '$' + spend.toLocaleString();
+  document.getElementById('out-waste').textContent = waste + '%';
+  document.getElementById('out-stock').textContent = '$' + stock.toLocaleString();
+  document.getElementById('out-tier').textContent = tierNames[tier];
+  document.getElementById('r-saved').textContent = '$' + saved.toLocaleString();
+  document.getElementById('r-stock').textContent = '$' + stock.toLocaleString();
+  document.getElementById('r-roi').textContent = roi + '×';
+  document.getElementById('r-cost').textContent = 'vs. $' + cost.toLocaleString() + '/year';
+  document.getElementById('tbl-cost').innerHTML = '<strong>$' + cost.toLocaleString() + '/yr</strong>';
+  document.getElementById('tbl-roi').innerHTML = '<strong style="color:#0F6E56">' + roi + '× ROI</strong>';
+}
+calcROI();
+</script>
+</body>
+</html>
