@@ -3,501 +3,800 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prescriptix SoloDept — Live Demo</title>
+<title>Prescriptix SoloDept</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --navy:#0d1f4e;--teal:#00b4a0;--teal-light:#00d4c0;
-    --crimson:#86001f;--gold:#c49729;
-    --bg:#f5f5f0;--card:#fff;--border:#e8e8e2;
-    --text:#1a1a2e;--muted:#666;--muted2:#999;
-  }
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0d1f4e;--navy2:#1a3a7a;--teal:#00b4a0;--teal2:#00d4c0;--crimson:#86001f;--gold:#c49729;--bg:#f0f0eb;--card:#fff;--border:#e5e5de;--text:#1a1a2e;--muted:#666;--muted2:#999;--sidebar:220px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
 
-  /* ── NAV ── */
-  nav{background:var(--navy);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
-  .nav-logo{display:flex;align-items:center;gap:10px}
-  .nav-bars{display:flex;align-items:flex-end;gap:2px;height:22px}
-  .nb{border-radius:2px 2px 0 0}
-  .nb1{width:6px;height:55%;background:#1a3a7a}
-  .nb2{width:6px;height:78%;background:var(--teal)}
-  .nb3{width:6px;height:100%;background:var(--teal-light);position:relative}
-  .nb3::after{content:'✓';position:absolute;top:-11px;left:50%;transform:translateX(-50%);color:var(--teal-light);font-size:9px;font-weight:700}
-  .nav-title{color:#fff;font-size:15px;font-weight:500}
-  .nav-sub{color:var(--teal);font-size:10px}
-  .nav-tabs{display:flex;gap:4px}
-  .nav-tab{padding:6px 14px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;color:rgba(255,255,255,.6);border:none;background:transparent;transition:.2s}
-  .nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.1);color:#fff}
-  .nav-tab.active{color:var(--teal-light)}
-  .nav-badge{background:var(--teal);color:var(--navy);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:8px}
+/* ═══ LANDING ═══════════════════════════════════════════════ */
+#s-land{background:var(--navy);flex-direction:column;align-items:center;justify-content:center;min-height:100vh;position:relative;overflow:hidden}
+#s-land::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,#1a3a7a55,transparent)}
+.land-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px}
+.land-wrap{position:relative;z-index:2;text-align:center;max-width:820px;padding:40px 24px}
+.land-logo{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:32px}
+.land-bars{display:flex;align-items:flex-end;gap:4px;height:44px}
+.lb{border-radius:3px 3px 0 0;transition:.3s}
+.lb1{width:10px;height:55%;background:#1a3a7a}
+.lb2{width:10px;height:78%;background:var(--teal)}
+.lb3{width:10px;height:100%;background:var(--teal2);position:relative}
+.lb3::after{content:'✓';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--teal2);font-size:13px;font-weight:700}
+.land-name{text-align:left}
+.land-name h1{font-size:26px;font-weight:500;color:#fff;letter-spacing:.3px}
+.land-name p{font-size:12px;color:var(--teal);margin-top:2px}
+.land-hero h2{font-size:48px;font-weight:300;color:#fff;line-height:1.2;margin-bottom:16px}
+.land-hero h2 strong{font-weight:600;color:var(--teal2)}
+.land-hero p{font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;max-width:580px;margin:0 auto 32px}
+.land-stats{display:flex;justify-content:center;gap:32px;margin-bottom:40px}
+.lstat{text-align:center}
+.lstat-val{font-size:32px;font-weight:300;color:var(--teal2)}
+.lstat-lbl{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.land-btns{display:flex;gap:12px;justify-content:center}
+.btn-primary{background:var(--teal);color:var(--navy);font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:var(--teal2)}
+.btn-outline{background:transparent;color:#fff;font-size:14px;font-weight:500;padding:12px 28px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-outline:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.05)}
+.land-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.lpill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;font-size:11px;color:rgba(255,255,255,.55)}
 
-  /* ── PAGES ── */
-  .page{display:none;padding:24px 32px;max-width:1200px;margin:0 auto}
-  .page.active{display:block}
+/* ═══ LOGIN ══════════════════════════════════════════════════ */
+#s-login{background:var(--navy);align-items:center;justify-content:center;min-height:100vh}
+#s-login::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 30% 50%,#1a3a7a44,transparent)}
+.login-card{background:var(--card);border-radius:16px;padding:36px;width:380px;position:relative;z-index:2}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.login-logo .lb-s{display:flex;align-items:flex-end;gap:3px;height:28px}
+.lbs{border-radius:2px 2px 0 0}
+.lbs1{width:7px;height:55%;background:var(--navy2)}
+.lbs2{width:7px;height:78%;background:var(--teal)}
+.lbs3{width:7px;height:100%;background:var(--teal2)}
+.login-logo-text .n{font-size:17px;font-weight:500;color:var(--navy)}
+.login-logo-text .s{font-size:10px;color:var(--teal)}
+.login-card h2{font-size:20px;font-weight:500;color:var(--navy);margin-bottom:4px}
+.login-card .sub{font-size:12px;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{font-size:11px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px;letter-spacing:.3px}
+.field input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:.2s}
+.field input:focus{border-color:var(--teal)}
+.hint{font-size:10px;color:var(--teal);margin-top:3px}
+.btn-login{width:100%;background:var(--navy);color:#fff;padding:11px;border-radius:8px;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-login:hover{background:var(--navy2)}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.login-err{background:#FCEBEB;border:1px solid #F7C1C1;border-radius:6px;padding:8px 10px;font-size:11px;color:#791F1F;display:none;margin-top:8px}
 
-  /* ── SECTION TITLE ── */
-  .sec-hdr{margin-bottom:20px}
-  .sec-hdr h2{font-size:20px;font-weight:500;color:var(--navy)}
-  .sec-hdr p{font-size:13px;color:var(--muted);margin-top:4px}
+/* ═══ APP SHELL ══════════════════════════════════════════════ */
+#s-app{flex-direction:row;min-height:100vh}
+.sidebar{width:var(--sidebar);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;position:fixed;left:0;top:0;bottom:0;z-index:50}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo-row{display:flex;align-items:center;gap:8px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:22px}
+.sbb{border-radius:2px 2px 0 0}
+.sbb1{width:6px;height:55%;background:var(--navy2)}
+.sbb2{width:6px;height:78%;background:var(--teal)}
+.sbb3{width:6px;height:100%;background:var(--teal2)}
+.sb-logo-text .sn{font-size:14px;font-weight:500;color:#fff}
+.sb-logo-text .ss{font-size:9px;color:var(--teal)}
+.sb-company{padding:10px 14px;margin:10px 10px 0;background:rgba(255,255,255,.06);border-radius:8px}
+.sb-company .cn{font-size:11px;font-weight:500;color:#fff}
+.sb-company .ct{font-size:9px;color:rgba(255,255,255,.4);margin-top:1px}
+.sb-nav{padding:12px 0;flex:1}
+.sb-section{font-size:8px;font-weight:600;letter-spacing:1px;color:rgba(255,255,255,.25);padding:0 16px;margin-bottom:4px;margin-top:12px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 14px;color:rgba(255,255,255,.5);font-size:12px;cursor:pointer;border-left:2px solid transparent;transition:.15s;margin:0 6px;border-radius:6px}
+.sb-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+.sb-item.active{background:rgba(0,180,160,.12);color:var(--teal2);border-left-color:var(--teal2)}
+.sb-badge{margin-left:auto;background:var(--crimson);color:#fff;font-size:8px;padding:2px 5px;border-radius:10px;font-weight:600}
+.sb-badge.gold{background:var(--gold)}
+.sb-bottom{padding:12px 14px;border-top:1px solid rgba(255,255,255,.08)}
+.sb-user{display:flex;align-items:center;gap:8px}
+.sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--navy)}
+.sb-uname{font-size:11px;color:rgba(255,255,255,.7)}
+.sb-uemail{font-size:9px;color:rgba(255,255,255,.35)}
+.sb-logout{margin-left:auto;font-size:9px;color:rgba(255,255,255,.3);cursor:pointer;padding:3px 6px;border-radius:4px;border:1px solid rgba(255,255,255,.12)}
+.sb-logout:hover{color:rgba(255,255,255,.6)}
 
-  /* ── CARDS ── */
-  .cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-  .stat-card{background:var(--card);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
-  .stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
-  .stat-val{font-size:24px;font-weight:500;color:var(--navy)}
-  .stat-sub{font-size:10px;margin-top:3px}
-  .up{color:#0F6E56}.down{color:var(--crimson)}
+.app-main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-breadcrumb{font-size:13px;font-weight:500;color:var(--navy)}
+.tb-sub{font-size:11px;color:var(--muted)}
+.tb-right{display:flex;align-items:center;gap:12px}
+.tb-weather{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);background:var(--bg);padding:5px 10px;border-radius:6px;border:1px solid var(--border)}
+.tb-time{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.tb-alert-btn{background:#FCEBEB;color:#791F1F;border:none;font-size:10px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.tb-ai-btn{background:#E1F5EE;color:#085041;border:none;font-size:10px;font-weight:500;padding:5px 10px;border-radius:6px}
 
-  /* ── TABLE PANEL ── */
-  .panel{background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px}
-  .panel-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-  .panel-hdr h3{font-size:13px;font-weight:500;color:var(--navy)}
-  .panel-hdr span{font-size:11px;color:var(--muted)}
-  table{width:100%;border-collapse:collapse}
-  th{font-size:10px;font-weight:500;letter-spacing:.4px;color:var(--muted);padding:8px 14px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf7}
-  td{padding:9px 14px;font-size:12px;color:var(--text);border-bottom:1px solid var(--border)}
-  tr:last-child td{border-bottom:none}
-  tr:hover td{background:#fafafa}
-  .pill{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:500}
-  .p-ok{background:#EAF3DE;color:#3B6D11}
-  .p-low{background:#FAEEDA;color:#633806}
-  .p-out{background:#FCEBEB;color:#791F1F}
-  .p-teal{background:#E1F5EE;color:#085041}
-  .btn-order{background:var(--teal);color:#fff;border:none;font-size:10px;padding:4px 10px;border-radius:4px;cursor:pointer;font-weight:500;transition:.15s}
-  .btn-order:hover{background:#008f7d}
-  .btn-order.done{background:#EAF3DE;color:#3B6D11;cursor:default}
+.view{display:none;padding:20px 24px;flex:1}
+.view.active{display:block}
 
-  /* ── 2-COL LAYOUT ── */
-  .two-col{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-bottom:16px}
-  .ai-box{background:#E1F5EE;border:1px solid #9FE1CB;border-radius:8px;padding:12px 14px;font-size:12px;color:#085041;line-height:1.55}
-  .ai-label{font-size:9px;font-weight:600;letter-spacing:.6px;color:#1D9E75;margin-bottom:6px}
+/* ═══ DASHBOARD ══════════════════════════════════════════════ */
+.alert-banner{background:linear-gradient(90deg,#86001f,#a0002a);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.alert-icon{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-icon svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2}
+.alert-text{flex:1;color:#fff;font-size:12px;line-height:1.5}
+.alert-text strong{font-size:13px;display:block;margin-bottom:2px}
+.alert-dismiss{background:rgba(255,255,255,.15);color:#fff;border:none;font-size:10px;padding:4px 10px;border-radius:4px;cursor:pointer;flex-shrink:0}
 
-  /* ── FORECAST BARS ── */
-  .forecast-wrap{padding:12px 16px}
-  .fc-label{font-size:11px;color:var(--muted);margin-bottom:10px}
-  .fc-bars{display:flex;align-items:flex-end;gap:5px;height:80px}
-  .fc-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-  .fc-bar{width:100%;border-radius:3px 3px 0 0;background:var(--teal);opacity:.7;transition:.3s}
-  .fc-bar.peak{opacity:1;background:var(--crimson)}
-  .fc-day{font-size:9px;color:var(--muted)}
-  .fc-controls{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-  .fc-btn{font-size:10px;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--text);transition:.15s}
-  .fc-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.mc{background:var(--card);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
+.mc-label{font-size:10px;color:var(--muted);margin-bottom:5px}
+.mc-val{font-size:26px;font-weight:500;color:var(--navy)}
+.mc-sub{font-size:10px;margin-top:3px}
+.up{color:#3B6D11}.dn{color:#791F1F}
+.mc.highlight{border-color:var(--teal);background:linear-gradient(135deg,#E1F5EE,#fff)}
 
-  /* ── REVENUE PAGE ── */
-  .revenue-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px}
-  .econ-table{padding:14px 16px}
-  .econ-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--border);font-size:12px}
-  .econ-row:last-child{border-bottom:none}
-  .econ-lbl{color:var(--muted)}
-  .econ-val{font-weight:500;color:var(--navy);font-family:'DM Mono',monospace;font-size:11px}
-  .econ-val.green{color:#0F6E56;background:#EAF3DE;padding:2px 7px;border-radius:4px}
-  .econ-val.red{color:var(--crimson);background:#FCEBEB;padding:2px 7px;border-radius:4px}
-  .tier-highlight{background:#E1F5EE}
-  .chart-wrap{padding:14px 16px}
-  .chart-inner{position:relative;width:100%;height:200px}
+.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:14px}
+.panel{background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+.ph{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ph h3{font-size:12px;font-weight:500;color:var(--navy)}
+.ph span{font-size:10px;color:var(--muted)}
+.pill{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:500;white-space:nowrap}
+.p-crit{background:#FCEBEB;color:#791F1F}
+.p-high{background:#FAEEDA;color:#633806}
+.p-ok{background:#EAF3DE;color:#3B6D11}
+.p-teal{background:#E1F5EE;color:#085041}
+table{width:100%;border-collapse:collapse}
+th{font-size:9px;font-weight:500;letter-spacing:.4px;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf7}
+td{padding:7px 12px;font-size:11px;color:var(--text);border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf7}
+.btn-ord{background:var(--teal);color:#fff;border:none;font-size:9px;padding:3px 8px;border-radius:4px;cursor:pointer;font-weight:500;transition:.15s}
+.btn-ord:hover{background:#008f7d}
+.btn-ord.done{background:#EAF3DE;color:#3B6D11;cursor:default}
 
-  /* ── BUDGET PAGE ── */
-  .budget-controls{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:16px;margin-bottom:16px}
-  .budget-controls h3{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:12px}
-  .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px}
-  .slider-lbl{width:160px;color:var(--muted);flex-shrink:0}
-  .slider-row input[type=range]{flex:1;accent-color:var(--teal)}
-  .slider-val{width:70px;text-align:right;font-weight:500;color:var(--navy);font-family:'DM Mono',monospace;font-size:11px}
-  .budget-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-  .result-card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:14px;text-align:center}
-  .result-card.highlight{border-color:var(--teal);background:#E1F5EE}
-  .result-big{font-size:26px;font-weight:500;color:var(--navy)}
-  .result-big.green{color:#0F6E56}
-  .result-lbl{font-size:11px;color:var(--muted);margin-top:4px}
-  .result-note{font-size:10px;color:var(--teal);margin-top:3px;font-weight:500}
+/* news */
+.news-item{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.news-item:last-child{border-bottom:none}
+.news-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.nd-red{background:#E24B4A}
+.nd-amber{background:var(--gold)}
+.nd-teal{background:var(--teal)}
+.news-title{font-size:11px;font-weight:500;color:var(--navy);margin-bottom:2px}
+.news-sub{font-size:10px;color:var(--muted);line-height:1.4}
+.news-impact{font-size:9px;font-weight:600;margin-top:3px;padding:2px 6px;border-radius:3px;display:inline-block}
+.ni-red{background:#FCEBEB;color:#791F1F}
+.ni-amber{background:#FAEEDA;color:#633806}
+.ni-green{background:#EAF3DE;color:#3B6D11}
 
-  /* ── HERO SECTION (HOME TAB) ── */
-  .hero{background:var(--navy);border-radius:12px;padding:28px 32px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
-  .hero-left h1{font-size:26px;font-weight:500;color:#fff;line-height:1.3}
-  .hero-left p{font-size:13px;color:rgba(255,255,255,.65);margin-top:8px;max-width:420px;line-height:1.6}
-  .hero-right{text-align:right}
-  .hero-big{font-size:48px;font-weight:300;color:var(--teal-light);line-height:1}
-  .hero-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
-  .hero-pill{display:inline-block;background:rgba(0,212,192,.15);color:var(--teal-light);font-size:11px;padding:4px 12px;border-radius:20px;margin-top:10px;border:1px solid rgba(0,212,192,.3)}
+/* AI box */
+.ai-panel{background:linear-gradient(135deg,#0d1f4e,#1a3a7a);border-radius:10px;padding:16px;margin-bottom:14px}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ai-dot{width:8px;height:8px;background:var(--teal2);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ai-header span{font-size:10px;font-weight:600;letter-spacing:.6px;color:var(--teal2)}
+.ai-text{font-size:12px;color:rgba(255,255,255,.85);line-height:1.75}
+.ai-text strong{color:var(--teal2)}
+.ai-chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.ai-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 10px;font-size:9px;color:rgba(255,255,255,.6)}
 
-  /* ── PROOF CHIPS ── */
-  .proof-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-  .proof-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:11px;display:flex;align-items:center;gap:8px}
-  .proof-chip .icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
-  .ic-teal{background:#E1F5EE;color:#1D9E75}
-  .ic-navy{background:#E6F1FB;color:#185FA5}
-  .ic-gold{background:#FAEEDA;color:#633806}
-  .ic-red{background:#FCEBEB;color:#791F1F}
-  .proof-chip strong{color:var(--navy)}
+/* chart area */
+.chart-wrap{padding:14px;position:relative}
+.chart-inner{height:160px;position:relative}
 
-  /* ── SELECT ── */
-  select{font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--text);cursor:pointer}
+/* ═══ INVENTORY ══════════════════════════════════════════════ */
+.storage-bar-wrap{padding:14px 16px}
+.storage-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px}
+.storage-track{height:14px;background:var(--bg);border-radius:7px;overflow:hidden;border:1px solid var(--border)}
+.storage-fill{height:100%;border-radius:7px;transition:.6s;display:flex;align-items:center;padding-left:8px;font-size:9px;font-weight:600;color:#fff}
+.sf-ok{background:linear-gradient(90deg,var(--teal),#00d4a0)}
+.sf-warn{background:linear-gradient(90deg,var(--gold),#e5a800)}
+.sf-over{background:linear-gradient(90deg,#E24B4A,var(--crimson))}
+.storage-legend{display:flex;gap:16px;margin-top:8px;font-size:10px;color:var(--muted)}
+.sl-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
 
-  @media print{body{background:#fff}}
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.expiry-item{padding:9px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;font-size:11px}
+.expiry-item:last-child{border-bottom:none}
+.exp-bar{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.exp-fill{height:100%;border-radius:3px}
+.ef-red{background:#E24B4A}
+.ef-amber{background:var(--gold)}
+.ef-green{background:var(--teal)}
+.exp-days{font-size:9px;font-weight:600;width:54px;text-align:right;flex-shrink:0}
+.ed-red{color:#791F1F}
+.ed-amber{color:#633806}
+.ed-green{color:#3B6D11}
+
+/* ═══ PREDICTIONS ════════════════════════════════════════════ */
+.pred-controls{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:16px;margin-bottom:14px}
+.pred-title{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.pred-title .badge{background:var(--navy);color:#fff;font-size:9px;padding:2px 7px;border-radius:10px}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.sl-lbl{font-size:11px;color:var(--muted);width:190px;flex-shrink:0}
+.sl-lbl strong{color:var(--text);display:block;font-size:12px}
+.slider-row input[type=range]{flex:1;accent-color:var(--teal);cursor:pointer}
+.sl-val{font-size:12px;font-weight:500;color:var(--navy);width:90px;text-align:right;font-family:'DM Mono',monospace}
+
+.pred-results{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.pr-card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:12px;text-align:center;transition:.3s}
+.pr-card.warn{border-color:var(--gold);background:#fffdf7}
+.pr-card.danger{border-color:#E24B4A;background:#fff8f8}
+.pr-card.good{border-color:var(--teal);background:#f0fdf9}
+.pr-big{font-size:28px;font-weight:500;color:var(--navy);line-height:1;transition:.3s}
+.pr-big.green{color:#3B6D11}
+.pr-big.amber{color:#633806}
+.pr-big.red{color:#791F1F}
+.pr-lbl{font-size:10px;color:var(--muted);margin-top:4px}
+.pr-note{font-size:9px;margin-top:5px;font-weight:500}
+
+.pred-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.scenario-list{padding:12px 16px}
+.sc-item{padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:11px;border:1px solid var(--border);cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:space-between}
+.sc-item:hover{border-color:var(--teal);background:#f0fdf9}
+.sc-item.active{border-color:var(--teal);background:#E1F5EE;color:#085041}
+.sc-name{font-weight:500}
+.sc-tag{font-size:9px;padding:2px 6px;border-radius:10px}
+.sct-g{background:#EAF3DE;color:#3B6D11}
+.sct-a{background:#FAEEDA;color:#633806}
+.sct-r{background:#FCEBEB;color:#791F1F}
+
+select{font-size:11px;padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">
-    <div class="nav-bars">
-      <div class="nb nb1"></div>
-      <div class="nb nb2"></div>
-      <div class="nb nb3"></div>
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="s-land" class="screen active">
+  <div class="land-grid"></div>
+  <div class="land-wrap">
+    <div class="land-logo">
+      <div class="land-bars"><div class="lb lb1"></div><div class="lb lb2"></div><div class="lb lb3"></div></div>
+      <div class="land-name"><h1>Prescriptix SoloDept</h1><p>AI-Powered Inventory Optimization</p></div>
     </div>
-    <div>
-      <div class="nav-title">Prescriptix SoloDept</div>
-      <div class="nav-sub">AI Inventory Optimization</div>
+    <div class="land-hero">
+      <h2>Your inventory analyst,<br><strong>working 24/7</strong> for $99/month</h2>
+      <p>We talked to 21 business owners. Three types lose money every week from bad inventory decisions. Prescriptix fixes that automatically — predicting demand, flagging risks, and telling you exactly what to order before you even open the shop.</p>
     </div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('home',this)">Overview</button>
-    <button class="nav-tab" onclick="showPage('dashboard',this)">AI Dashboard</button>
-    <button class="nav-tab" onclick="showPage('revenue',this)">Revenue Model</button>
-    <button class="nav-tab" onclick="showPage('budget',this)">Budget Calculator</button>
-  </div>
-  <div>
-    <span class="nav-badge">Live Demo</span>
-  </div>
-</nav>
-
-<!-- ══ HOME PAGE ══════════════════════════════════════════ -->
-<div class="page active" id="page-home">
-  <div style="max-width:1100px;margin:0 auto;padding-top:8px">
-
-    <div class="hero">
-      <div class="hero-left">
-        <h1>The AI inventory analyst<br>SMBs can finally afford.</h1>
-        <p>We talked to 21 business owners. Three types bleed money every week from bad inventory. Prescriptix fixes that — automatically, 24 hours a day, at $99/month instead of $60K/year.</p>
-        <div class="hero-pill">Seeking $50,000 Seed Investment</div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-big">$1.2M</div>
-        <div class="hero-sub">ARR target by Year 3</div>
-        <div style="margin-top:16px">
-          <div style="font-size:28px;font-weight:300;color:#FAC775">82%</div>
-          <div class="hero-sub">Gross Margin</div>
-        </div>
-        <div style="margin-top:12px">
-          <div style="font-size:28px;font-weight:300;color:#fff">14.8×</div>
-          <div class="hero-sub">LTV : CAC</div>
-        </div>
-      </div>
+    <div class="land-stats">
+      <div class="lstat"><div class="lstat-val">82%</div><div class="lstat-lbl">Gross Margin</div></div>
+      <div class="lstat"><div class="lstat-val">14.8×</div><div class="lstat-lbl">LTV : CAC</div></div>
+      <div class="lstat"><div class="lstat-val">$1.2M</div><div class="lstat-lbl">ARR Year 3</div></div>
+      <div class="lstat"><div class="lstat-val">91%</div><div class="lstat-lbl">Forecast Accuracy</div></div>
     </div>
-
-    <div class="proof-row">
-      <div class="proof-chip"><div class="icon ic-teal">21</div><span><strong>Customer interviews</strong> across 6 market segments</span></div>
-      <div class="proof-chip"><div class="icon ic-navy">3</div><span><strong>Validated pain segments</strong>: pharma, auto-parts, food service</span></div>
-      <div class="proof-chip"><div class="icon ic-gold">✓</div><span><strong>Willingness to pay</strong> confirmed by pharma & auto-parts owners</span></div>
-      <div class="proof-chip"><div class="icon ic-red">!</div><span>SMBs over-order <strong>20–30%</strong> — tying up cash they can't afford</span></div>
+    <div class="land-btns">
+      <button class="btn-primary" onclick="show('s-login')">Get Started — Free Trial</button>
+      <button class="btn-outline" onclick="show('s-login')">Sign In</button>
     </div>
-
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
-      <div class="panel">
-        <div class="panel-hdr"><h3>The Problem We Solve</h3></div>
-        <div style="padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7">
-          <div style="margin-bottom:8px"><strong style="color:var(--text)">Hotels & restaurants</strong> — perishable stockouts every busy weekend. Corbett Center couldn't forecast halal chicken demand from Muslim students.</div>
-          <div style="margin-bottom:8px"><strong style="color:var(--text)">Pharma stores</strong> — weather triggers flu/cough surges. Customers leave when shelves are empty. Expired stock written off quarterly.</div>
-          <div><strong style="color:var(--text)">Auto-parts shops</strong> — parts ship from China in 2–4 weeks. Customers who can't wait go to competitors, forever.</div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-hdr"><h3>Why Existing Solutions Fail</h3></div>
-        <div style="padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7">
-          <div style="margin-bottom:8px"><strong style="color:var(--crimson)">Spreadsheets</strong> — reactive, no forecasting, relies on gut feel</div>
-          <div style="margin-bottom:8px"><strong style="color:var(--crimson)">Manual analyst hire</strong> — works 9-to-5 only, $60K–$80K/year, one thing at a time</div>
-          <div style="margin-bottom:8px"><strong style="color:var(--crimson)">NetSuite / SAP</strong> — $2,000+/mo, built for corporations</div>
-          <div style="color:var(--teal);font-weight:500"><strong>Prescriptix</strong> — $99/mo, AI-powered, never sleeps</div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-hdr"><h3>Market Opportunity</h3></div>
-        <div style="padding:14px 16px">
-          <div style="margin-bottom:10px">
-            <div style="font-size:18px;font-weight:500;color:var(--navy)">$4.8B <span style="font-size:11px;font-weight:400;color:var(--muted)">TAM</span></div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">~6M US SMBs with inventory challenges</div>
-          </div>
-          <div style="margin-bottom:10px">
-            <div style="font-size:18px;font-weight:500;color:var(--navy)">$240M <span style="font-size:11px;font-weight:400;color:var(--muted)">SAM</span></div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">~400K pharma/auto-parts/food-service SMBs</div>
-          </div>
-          <div>
-            <div style="font-size:18px;font-weight:500;color:var(--teal)">$6M <span style="font-size:11px;font-weight:400;color:var(--muted)">SOM (Year 3)</span></div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">5,000 subscribers @ $100/mo — &lt;1.3% of SAM</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ══ DASHBOARD PAGE ══════════════════════════════════════ -->
-<div class="page" id="page-dashboard">
-  <div class="sec-hdr">
-    <h2>AI Inventory Dashboard</h2>
-    <p>Real-time recommendations, demand forecasts, and automated reorder alerts — running 24/7.</p>
-  </div>
-
-  <div class="cards-row">
-    <div class="stat-card"><div class="stat-label">Dead Stock Freed This Month</div><div class="stat-val">$4,320</div><div class="stat-sub up">↑ 22% vs last month</div></div>
-    <div class="stat-card"><div class="stat-label">Stockout Incidents Prevented</div><div class="stat-val">11</div><div class="stat-sub up">↑ AI caught them overnight</div></div>
-    <div class="stat-card"><div class="stat-label">Forecast Accuracy</div><div class="stat-val">91%</div><div class="stat-sub up">↑ 8 pts from last month</div></div>
-    <div class="stat-card"><div class="stat-label">Est. Monthly Savings</div><div class="stat-val">$1,180</div><div class="stat-sub up">vs. manual ordering</div></div>
-  </div>
-
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-hdr">
-        <h3>AI Purchase Recommendations</h3>
-        <span>Budget remaining: <strong>$1,240</strong></span>
-      </div>
-      <table>
-        <thead><tr><th>Item</th><th>Stock</th><th>AI Forecast</th><th>Recommend</th><th>Priority</th><th></th></tr></thead>
-        <tbody>
-          <tr><td><strong>Flu Syrup 200ml</strong></td><td><span class="pill p-out">0 units</span></td><td>↑ 40 units/wk</td><td>80 units</td><td><span class="pill p-out">Critical</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
-          <tr><td><strong>Paracetamol 500mg</strong></td><td><span class="pill p-low">12 units</span></td><td>↑ 35 units/wk</td><td>120 units</td><td><span class="pill p-low">High</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
-          <tr><td><strong>Antibiotic Amox 250</strong></td><td><span class="pill p-low">8 units</span></td><td>→ 20 units/wk</td><td>60 units</td><td><span class="pill p-low">High</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
-          <tr><td><strong>Vitamin C 1000mg</strong></td><td><span class="pill p-ok">140 units</span></td><td>→ 18 units/wk</td><td>—</td><td><span class="pill p-ok">OK</span></td><td><button class="btn-order done" disabled>No Action</button></td></tr>
-          <tr><td><strong>Cough Tabs 10-strip</strong></td><td><span class="pill p-out">2 units</span></td><td>↑ 28 units/wk</td><td>90 units</td><td><span class="pill p-out">Critical</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
-          <tr><td><strong>Ibuprofen 400mg</strong></td><td><span class="pill p-low">24 units</span></td><td>→ 22 units/wk</td><td>80 units</td><td><span class="pill p-low">High</span></td><td><button class="btn-order" onclick="markDone(this)">Order Now</button></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="panel">
-        <div class="panel-hdr">
-          <h3>7-Day Demand Forecast</h3>
-          <select id="prodSel" onchange="updateForecast()">
-            <option>Flu Syrup 200ml</option>
-            <option>Paracetamol 500mg</option>
-            <option>Vitamin C 1000mg</option>
-            <option>Cough Tabs 10-strip</option>
-          </select>
-        </div>
-        <div class="forecast-wrap">
-          <div class="fc-label" id="fc-label">Peak demand: Thu–Fri · Avg 12 units/day</div>
-          <div class="fc-bars" id="fc-bars">
-            <div class="fc-bar-wrap"><div class="fc-bar" style="height:40%"></div><div class="fc-day">Mon</div></div>
-            <div class="fc-bar-wrap"><div class="fc-bar" style="height:55%"></div><div class="fc-day">Tue</div></div>
-            <div class="fc-bar-wrap"><div class="fc-bar" style="height:70%"></div><div class="fc-day">Wed</div></div>
-            <div class="fc-bar-wrap"><div class="fc-bar peak" style="height:100%"></div><div class="fc-day">Thu</div></div>
-            <div class="fc-bar-wrap"><div class="fc-bar peak" style="height:95%"></div><div class="fc-day">Fri</div></div>
-            <div class="fc-bar-wrap"><div class="fc-bar" style="height:80%"></div><div class="fc-day">Sat</div></div>
-            <div class="fc-bar-wrap"><div class="fc-bar" style="height:75%"></div><div class="fc-day">Sun</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-hdr"><h3>AI Explanation</h3><span class="pill p-teal">Powered by Claude API</span></div>
-        <div style="padding:12px 14px">
-          <div class="ai-label">WHY THIS RECOMMENDATION</div>
-          <div class="ai-box" id="ai-text">Flu Syrup demand will spike 40% this week. A cold front arrives Thursday — historically this drives a 35–45% surge in cold medicine sales. Three nearby schools also reported illness outbreaks. You will stock out by Wednesday at current levels. Ordering 80 units now covers the next 10 days with a 15% safety buffer.</div>
-        </div>
-      </div>
+    <div class="land-pills">
+      <span class="lpill">Pharma &amp; Health</span>
+      <span class="lpill">Auto-Parts</span>
+      <span class="lpill">Hotels &amp; Restaurants</span>
+      <span class="lpill">No data scientist needed</span>
+      <span class="lpill">NMSU I-Corps Validated</span>
     </div>
   </div>
 </div>
 
-<!-- ══ REVENUE PAGE ════════════════════════════════════════ -->
-<div class="page" id="page-revenue">
-  <div class="sec-hdr">
-    <h2>Revenue Model & Unit Economics</h2>
-    <p>Tiered SaaS subscription · 82% gross margins · 14.8× LTV:CAC ratio</p>
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="s-login" class="screen" style="position:relative">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 30% 50%,#1a3a7a33,transparent)"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="lb-s"><div class="lbs lbs1"></div><div class="lbs lbs2"></div><div class="lbs lbs3"></div></div>
+      <div class="login-logo-text"><div class="n">Prescriptix SoloDept</div><div class="s">AI Inventory Optimization</div></div>
+    </div>
+    <h2>Welcome back</h2>
+    <div class="sub">Sign in to your dashboard</div>
+    <div class="field">
+      <label>USERNAME</label>
+      <input type="text" id="li-user" placeholder="Enter username" value="abc">
+      <div class="hint">Demo: abc</div>
+    </div>
+    <div class="field">
+      <label>PASSWORD</label>
+      <input type="password" id="li-pass" placeholder="Enter password" value="123">
+      <div class="hint">Demo password: 123</div>
+    </div>
+    <button class="btn-login" id="login-btn" onclick="doLogin()">
+      <span id="login-txt">Sign In to Dashboard</span>
+      <div class="spinner" id="login-spin"></div>
+    </button>
+    <div class="login-err" id="login-err">Incorrect username or password. Try: abc / 123</div>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--muted)">
+      <span style="cursor:pointer;color:var(--navy)" onclick="show('s-land')">← Back to home</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="s-app" class="screen">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-row">
+        <div class="sb-bars"><div class="sbb sbb1"></div><div class="sbb sbb2"></div><div class="sbb sbb3"></div></div>
+        <div class="sb-logo-text"><div class="sn">Prescriptix</div><div class="ss">SoloDept</div></div>
+      </div>
+    </div>
+    <div class="sb-company">
+      <div class="cn">Al-Madina Pharmacy</div>
+      <div class="ct">El Paso, TX · Growth Plan</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section">MAIN</div>
+      <div class="sb-item active" onclick="showView('v-dash',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+        <span class="sb-badge">3</span>
+      </div>
+      <div class="sb-item" onclick="showView('v-inv',this)">
+        <svg viewBox="0 0 24 24"><path d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        Inventory &amp; Storage
+        <span class="sb-badge gold">2</span>
+      </div>
+      <div class="sb-item" onclick="showView('v-pred',this)">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Smart Predictions
+      </div>
+      <div class="sb-section">INSIGHTS</div>
+      <div class="sb-item">
+        <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Reports
+      </div>
+      <div class="sb-item">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        Alerts
+        <span class="sb-badge">5</span>
+      </div>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar">AB</div>
+        <div><div class="sb-uname">abc</div><div class="sb-uemail">Al-Madina · Owner</div></div>
+        <div class="sb-logout" onclick="show('s-login')">Exit</div>
+      </div>
+    </div>
   </div>
 
-  <div class="revenue-grid">
-    <div>
-      <div class="panel" style="margin-bottom:12px">
-        <div class="panel-hdr"><h3>3-Year Revenue Projection</h3></div>
-        <div class="chart-wrap"><div class="chart-inner"><canvas id="revenueChart" role="img" aria-label="Bar chart showing revenue growing from $108K in Year 1 to $1.19M in Year 3">Year 1: $108K, Year 2: $420K, Year 3: $1.19M revenue.</canvas></div></div>
+  <!-- MAIN -->
+  <div class="app-main">
+    <div class="topbar">
+      <div class="tb-left">
+        <div>
+          <div class="tb-breadcrumb" id="tb-title">Dashboard</div>
+          <div class="tb-sub">Wednesday, April 24, 2026 · El Paso, TX</div>
+        </div>
       </div>
+      <div class="tb-right">
+        <div class="tb-weather">🌡 28°F · Cold front arriving Thu</div>
+        <div class="tb-time" id="tb-clock">09:42 AM</div>
+        <div class="tb-alert-btn">⚠ 3 Critical</div>
+        <div class="tb-ai-btn">AI Active</div>
+      </div>
+    </div>
+
+    <!-- ── DASHBOARD VIEW ── -->
+    <div class="view active" id="v-dash">
+      <div class="alert-banner">
+        <div class="alert-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="alert-text"><strong>3 Critical Stockouts Predicted This Week</strong>Flu Syrup, Cough Tabs, and Insulin Syringes will run out before Thursday. Cold front driving demand up 40%. Order immediately.</div>
+        <button class="alert-dismiss" onclick="this.parentElement.style.display='none'">Dismiss</button>
+      </div>
+
+      <div class="metrics">
+        <div class="mc"><div class="mc-label">Budget Remaining</div><div class="mc-val">$1,240</div><div class="mc-sub" style="color:var(--muted)">of $3,000 monthly</div></div>
+        <div class="mc highlight"><div class="mc-label">Dead Stock Freed</div><div class="mc-val">$4,320</div><div class="mc-sub up">↑ 22% this month</div></div>
+        <div class="mc"><div class="mc-label">Stockouts Prevented</div><div class="mc-val">11</div><div class="mc-sub up">↑ AI caught overnight</div></div>
+        <div class="mc"><div class="mc-label">Forecast Accuracy</div><div class="mc-val">91%</div><div class="mc-sub up">↑ 8 pts vs last month</div></div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-header"><div class="ai-dot"></div><span>CLAUDE AI · DAILY BRIEFING · APRIL 24, 2026</span></div>
+        <div class="ai-text">Good morning. Here is what your AI found overnight:<br><br>A <strong>cold front arrives Thursday</strong> — El Paso temperature dropping to 28°F. Based on historical patterns, this will drive a <strong>38–44% surge in flu and cold medicine demand</strong>. You currently have <strong>zero Flu Syrup and only 2 Cough Tab strips</strong> — you will run out within 5 hours of opening Thursday. Order both immediately.<br><br>NMSU is hosting a Health Fair this weekend with 2,000+ visitors. <strong>Vitamin supplements and hand sanitizer</strong> will see unusual demand Saturday–Sunday. Your current stock of Vitamin C (140 units) is adequate, but hand sanitizer (200 units) is fine only if the Health Fair does not materialise early.<br><br>One positive: your <strong>Blood Pressure Medication restock last week</strong> saved an estimated $420 in emergency purchases. The AI correctly predicted the senior community demand spike on Tuesday.</div>
+        <div class="ai-chips"><span class="ai-chip">Cold front: +40% flu demand</span><span class="ai-chip">NMSU Health Fair: Sun demand spike</span><span class="ai-chip">3 items: order today</span><span class="ai-chip">Storage: 71% used</span></div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="panel">
+          <div class="ph"><h3>AI Purchase Recommendations</h3><span>Budget: $1,240 left</span></div>
+          <table>
+            <thead><tr><th>Item</th><th>Stock</th><th>AI Forecast</th><th>Order Qty</th><th>Priority</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Flu Syrup 200ml</strong></td><td><span class="pill p-crit">0 units</span></td><td>↑ 40/wk</td><td>80 units</td><td><span class="pill p-crit">Critical</span></td><td><button class="btn-ord" onclick="markOrder(this)">Order Now</button></td></tr>
+              <tr><td><strong>Cough Tabs 10-strip</strong></td><td><span class="pill p-crit">2 units</span></td><td>↑ 28/wk</td><td>90 units</td><td><span class="pill p-crit">Critical</span></td><td><button class="btn-ord" onclick="markOrder(this)">Order Now</button></td></tr>
+              <tr><td><strong>Insulin Syringes</strong></td><td><span class="pill p-crit">6 units</span></td><td>→ 30/wk</td><td>100 units</td><td><span class="pill p-crit">Critical</span></td><td><button class="btn-ord" onclick="markOrder(this)">Order Now</button></td></tr>
+              <tr><td><strong>Paracetamol 500mg</strong></td><td><span class="pill p-high">12 units</span></td><td>↑ 35/wk</td><td>120 units</td><td><span class="pill p-high">High</span></td><td><button class="btn-ord" onclick="markOrder(this)">Order Now</button></td></tr>
+              <tr><td><strong>Ibuprofen 400mg</strong></td><td><span class="pill p-high">24 units</span></td><td>→ 22/wk</td><td>80 units</td><td><span class="pill p-high">High</span></td><td><button class="btn-ord" onclick="markOrder(this)">Order Now</button></td></tr>
+              <tr><td><strong>Vitamin C 1000mg</strong></td><td><span class="pill p-ok">140 units</span></td><td>→ 18/wk</td><td>—</td><td><span class="pill p-ok">OK</span></td><td><button class="btn-ord done" disabled>No Action</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="panel">
+            <div class="ph"><h3>Local Intelligence Feed</h3><span>AI-monitored</span></div>
+            <div class="news-item">
+              <div class="news-dot nd-red"></div>
+              <div><div class="news-title">Cold front Thu — El Paso 28°F</div><div class="news-sub">NWS forecast confirms arctic air mass arriving Thursday morning. Historical data: +40% cold medicine sales.</div><div class="news-impact ni-red">High Impact · Order today</div></div>
+            </div>
+            <div class="news-item">
+              <div class="news-dot nd-amber"></div>
+              <div><div class="news-title">NMSU Health Fair — this Sunday</div><div class="news-sub">2,000+ attendees expected at Corbett Center. Vitamins, supplements, hand sanitizer demand spike predicted.</div><div class="news-impact ni-amber">Medium Impact · Monitor stock</div></div>
+            </div>
+            <div class="news-item">
+              <div class="news-dot nd-teal"></div>
+              <div><div class="news-title">Flu season peaks early — Doña Ana Co.</div><div class="news-sub">County health report: flu cases up 31% week-over-week. Demand window lasts 3–4 more weeks.</div><div class="news-impact ni-green">Opportunity · Stock up now</div></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h3>7-Day Demand Forecast</h3>
+              <select onchange="updateChart(this.value)">
+                <option>Flu Syrup 200ml</option>
+                <option>Paracetamol 500mg</option>
+                <option>Cough Tabs</option>
+              </select>
+            </div>
+            <div class="chart-wrap"><div class="chart-inner"><canvas id="fcChart" role="img" aria-label="7 day demand forecast chart">Demand forecast for selected product over 7 days.</canvas></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INVENTORY VIEW ── -->
+    <div class="view" id="v-inv">
+      <div class="metrics">
+        <div class="mc"><div class="mc-label">Total SKUs</div><div class="mc-val">24</div><div class="mc-sub" style="color:var(--muted)">active products</div></div>
+        <div class="mc"><div class="mc-label">Storage Used</div><div class="mc-val">71%</div><div class="mc-sub" style="color:var(--muted)">847 / 1,200 units</div></div>
+        <div class="mc"><div class="mc-label">Expiry Alerts</div><div class="mc-val" style="color:#791F1F">3</div><div class="mc-sub dn">within 90 days</div></div>
+        <div class="mc"><div class="mc-label">Emergency Stock Value</div><div class="mc-val">$2,840</div><div class="mc-sub up">protected buffer</div></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:14px">
+        <div class="ph"><h3>Storage Capacity Tracker</h3><span>Real-time shelf usage</span></div>
+        <div class="storage-bar-wrap">
+          <div class="storage-label"><span style="font-size:11px;color:var(--navy);font-weight:500">Current Stock</span><span style="font-size:11px;color:var(--muted)">847 / 1,200 units (71%)</span></div>
+          <div class="storage-track"><div class="storage-fill sf-ok" style="width:71%">Current</div></div>
+          <div style="margin-top:10px">
+            <div class="storage-label"><span style="font-size:11px;color:var(--gold);font-weight:500">After Recommended Orders</span><span style="font-size:11px;color:#633806">1,117 / 1,200 units (93%)</span></div>
+            <div class="storage-track"><div class="storage-fill sf-warn" style="width:93%">After orders</div></div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="storage-label"><span style="font-size:11px;color:var(--crimson);font-weight:500">If over-ordered (no AI)</span><span style="font-size:11px;color:#791F1F">1,340 / 1,200 units — OVER CAPACITY</span></div>
+            <div class="storage-track"><div class="storage-fill sf-over" style="width:100%">Over capacity!</div></div>
+          </div>
+          <div class="storage-legend">
+            <span><span class="sl-dot" style="background:var(--teal)"></span>Safe (0–85%)</span>
+            <span><span class="sl-dot" style="background:var(--gold)"></span>Near full (85–95%)</span>
+            <span><span class="sl-dot" style="background:#E24B4A"></span>Over capacity (&gt;100%)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="inv-grid">
+        <div class="panel">
+          <div class="ph"><h3>Expiry Date Monitor</h3><span>Auto-sorted by urgency</span></div>
+          <div class="expiry-item">
+            <div style="width:130px;font-size:11px;font-weight:500;color:var(--navy)">Hand Sanitizer</div>
+            <div class="exp-bar"><div class="exp-fill ef-red" style="width:8%"></div></div>
+            <div class="exp-days ed-red">28 days</div>
+            <span class="pill p-crit" style="font-size:8px">Liquidate</span>
+          </div>
+          <div class="expiry-item">
+            <div style="width:130px;font-size:11px;font-weight:500;color:var(--navy)">Antacid Tablets</div>
+            <div class="exp-bar"><div class="exp-fill ef-amber" style="width:25%"></div></div>
+            <div class="exp-days ed-amber">62 days</div>
+            <span class="pill p-high" style="font-size:8px">Promote</span>
+          </div>
+          <div class="expiry-item">
+            <div style="width:130px;font-size:11px;font-weight:500;color:var(--navy)">Cold Syrup 100ml</div>
+            <div class="exp-bar"><div class="exp-fill ef-amber" style="width:30%"></div></div>
+            <div class="exp-days ed-amber">75 days</div>
+            <span class="pill p-high" style="font-size:8px">Watch</span>
+          </div>
+          <div class="expiry-item">
+            <div style="width:130px;font-size:11px;font-weight:500;color:var(--navy)">Paracetamol 500mg</div>
+            <div class="exp-bar"><div class="exp-fill ef-green" style="width:65%"></div></div>
+            <div class="exp-days ed-green">180 days</div>
+            <span class="pill p-ok" style="font-size:8px">Safe</span>
+          </div>
+          <div class="expiry-item">
+            <div style="width:130px;font-size:11px;font-weight:500;color:var(--navy)">Vitamin C 1000mg</div>
+            <div class="exp-bar"><div class="exp-fill ef-green" style="width:80%"></div></div>
+            <div class="exp-days ed-green">220 days</div>
+            <span class="pill p-ok" style="font-size:8px">Safe</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="ph"><h3>Emergency Buffer Stock</h3><span>AI-recommended safety levels</span></div>
+          <table>
+            <thead><tr><th>Item</th><th>Buffer</th><th>Current</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Flu Syrup 200ml</td><td>20 units</td><td style="color:#791F1F;font-weight:500">0</td><td><span class="pill p-crit">Empty</span></td></tr>
+              <tr><td>Insulin Syringes</td><td>15 units</td><td style="color:#791F1F;font-weight:500">6</td><td><span class="pill p-crit">Below</span></td></tr>
+              <tr><td>Paracetamol 500mg</td><td>30 units</td><td style="color:#633806;font-weight:500">12</td><td><span class="pill p-high">Low</span></td></tr>
+              <tr><td>Ibuprofen 400mg</td><td>20 units</td><td style="color:#3B6D11;font-weight:500">24</td><td><span class="pill p-ok">OK</span></td></tr>
+              <tr><td>Antacid Tablets</td><td>15 units</td><td style="color:#3B6D11;font-weight:500">45</td><td><span class="pill p-ok">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="panel">
-        <div class="panel-hdr"><h3>Pricing Tiers</h3><span>★ Growth is primary revenue driver</span></div>
+        <div class="ph"><h3>Full Stock Overview</h3><span>All 24 active SKUs</span></div>
         <table>
-          <thead><tr><th>Tier</th><th>Price</th><th>Target Customer</th><th>Features</th></tr></thead>
+          <thead><tr><th>Product</th><th>Current Stock</th><th>Storage %</th><th>Expiry</th><th>Reorder Point</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Freemium</td><td>$0/mo</td><td>Trial / micro-SMB</td><td>Manual entry, 24-hr forecast</td></tr>
-            <tr><td>Basic</td><td>$19/mo</td><td>1–2 SKU categories</td><td>Basic alerts, weekly report</td></tr>
-            <tr class="tier-highlight"><td><strong>Growth ★</strong></td><td><strong>$99/mo</strong></td><td>Pharma, auto-parts</td><td>Full AI, seasonal forecasting, PDF reports</td></tr>
-            <tr><td>Premium</td><td>$249/mo</td><td>Multi-location SMB</td><td>Multi-store, API integrations</td></tr>
+            <tr><td><strong>Flu Syrup 200ml</strong></td><td style="color:#791F1F">0 units</td><td>0%</td><td style="color:#3B6D11">Mar 2027</td><td>20 units</td><td><span class="pill p-crit">Critical</span></td></tr>
+            <tr><td><strong>Cough Tabs 10-strip</strong></td><td style="color:#791F1F">2 units</td><td>0.2%</td><td style="color:#3B6D11">Jun 2027</td><td>15 units</td><td><span class="pill p-crit">Critical</span></td></tr>
+            <tr><td><strong>Insulin Syringes</strong></td><td style="color:#791F1F">6 units</td><td>0.5%</td><td style="color:#3B6D11">Dec 2026</td><td>15 units</td><td><span class="pill p-crit">Critical</span></td></tr>
+            <tr><td>Paracetamol 500mg</td><td style="color:#633806">12 units</td><td>1%</td><td style="color:#3B6D11">Oct 2026</td><td>30 units</td><td><span class="pill p-high">High</span></td></tr>
+            <tr><td>Ibuprofen 400mg</td><td style="color:#633806">24 units</td><td>2%</td><td style="color:#3B6D11">Aug 2026</td><td>20 units</td><td><span class="pill p-high">High</span></td></tr>
+            <tr><td>Vitamin C 1000mg</td><td style="color:#3B6D11">140 units</td><td>11.7%</td><td style="color:#3B6D11">Feb 2027</td><td>30 units</td><td><span class="pill p-ok">OK</span></td></tr>
+            <tr><td>Hand Sanitizer</td><td style="color:#633806">200 units</td><td>16.7%</td><td style="color:#791F1F">May 2026</td><td>50 units</td><td><span class="pill p-high">Expiry Risk</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="panel">
-        <div class="panel-hdr"><h3>Unit Economics (Growth Tier)</h3></div>
-        <div class="econ-table">
-          <div class="econ-row"><span class="econ-lbl">Revenue per user / month</span><span class="econ-val">$99.00</span></div>
-          <div class="econ-row"><span class="econ-lbl">COGS — Claude API calls</span><span class="econ-val">~$8.00</span></div>
-          <div class="econ-row"><span class="econ-lbl">COGS — Cloud hosting</span><span class="econ-val">~$10.00</span></div>
-          <div class="econ-row"><span class="econ-lbl">Total COGS per user</span><span class="econ-val">~$18.00</span></div>
-          <div class="econ-row"><span class="econ-lbl">Gross margin</span><span class="econ-val green">82%</span></div>
-          <div class="econ-row"><span class="econ-lbl">Customer Acquisition Cost</span><span class="econ-val">$120</span></div>
-          <div class="econ-row"><span class="econ-lbl">Avg retention</span><span class="econ-val">18 months</span></div>
-          <div class="econ-row"><span class="econ-lbl">Lifetime Value (LTV)</span><span class="econ-val">$1,782</span></div>
-          <div class="econ-row"><span class="econ-lbl">LTV : CAC ratio</span><span class="econ-val red">14.8×</span></div>
+    <!-- ── PREDICTIONS VIEW ── -->
+    <div class="view" id="v-pred">
+      <div class="ai-panel" style="margin-bottom:14px">
+        <div class="ai-header"><div class="ai-dot"></div><span>CLAUDE AI · PREDICTION ENGINE</span></div>
+        <div class="ai-text">Use the sliders below to run <strong>what-if scenarios</strong>. The AI will instantly recalculate your predicted revenue, wastage risk, storage impact, and emergency stock recommendations. This is how you make smarter decisions <strong>before</strong> committing your budget — not after.</div>
+      </div>
+
+      <div class="pred-controls">
+        <div class="pred-title">Scenario Builder <span class="badge">Real-time AI</span></div>
+        <div class="slider-row">
+          <div class="sl-lbl"><strong>Monthly Budget to Invest</strong>How much you allocate for restocking</div>
+          <input type="range" min="500" max="5000" step="100" value="1240" id="sl-budget" oninput="updatePred()">
+          <div class="sl-val" id="out-budget">$1,240</div>
+        </div>
+        <div class="slider-row">
+          <div class="sl-lbl"><strong>Order Quantity Multiplier</strong>1× = AI recommended · 2× = double up</div>
+          <input type="range" min="0.5" max="2.5" step="0.1" value="1" id="sl-qty" oninput="updatePred()">
+          <div class="sl-val" id="out-qty">1.0× (AI optimal)</div>
+        </div>
+        <div class="slider-row">
+          <div class="sl-lbl"><strong>Lead Time Buffer (days)</strong>Extra days of stock as safety buffer</div>
+          <input type="range" min="0" max="14" step="1" value="3" id="sl-lead" oninput="updatePred()">
+          <div class="sl-val" id="out-lead">3 days</div>
         </div>
       </div>
-      <div class="panel">
-        <div class="panel-hdr"><h3>Revenue Milestones</h3></div>
-        <table>
-          <thead><tr><th></th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr></thead>
-          <tbody>
-            <tr><td>Paying Users</td><td>90</td><td>350</td><td>990</td></tr>
-            <tr><td>ARR</td><td>$108K</td><td>$420K</td><td>$1.19M</td></tr>
-            <tr><td>Gross Margin</td><td>67%</td><td>67%</td><td>82%</td></tr>
-            <tr><td>Gross Profit</td><td>$72K</td><td>$280K</td><td>$975K</td></tr>
-          </tbody>
-        </table>
-        <div style="padding:10px 14px;font-size:10px;color:var(--muted)">Margin increases Yr 3 as fixed infrastructure costs amortize across 990+ users.</div>
+
+      <div class="pred-results">
+        <div class="pr-card" id="pr-rev"><div class="pr-big green" id="r-rev">$3,240</div><div class="pr-lbl">Predicted Monthly Revenue</div><div class="pr-note" style="color:#3B6D11" id="r-rev-n">+12% vs baseline</div></div>
+        <div class="pr-card" id="pr-waste"><div class="pr-big" id="r-waste">8%</div><div class="pr-lbl">Wastage Probability</div><div class="pr-note" style="color:#3B6D11" id="r-waste-n">Low — AI optimised</div></div>
+        <div class="pr-card" id="pr-stor"><div class="pr-big" id="r-stor">71%</div><div class="pr-lbl">Storage Used After Order</div><div class="pr-note" id="r-stor-n" style="color:#3B6D11">Safe zone</div></div>
+        <div class="pr-card" id="pr-roi"><div class="pr-big green" id="r-roi">14.2×</div><div class="pr-lbl">ROI on Investment</div><div class="pr-note" style="color:#3B6D11" id="r-roi-n">Excellent return</div></div>
+      </div>
+
+      <div class="pred-grid">
+        <div class="panel">
+          <div class="ph"><h3>Revenue vs Wastage Projection</h3><span>12-month outlook</span></div>
+          <div class="chart-wrap"><div class="chart-inner" style="height:200px"><canvas id="predChart" role="img" aria-label="Revenue and wastage prediction chart">12-month revenue and wastage projection.</canvas></div></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="panel">
+            <div class="ph"><h3>Quick Scenarios</h3><span>Click to apply</span></div>
+            <div class="scenario-list">
+              <div class="sc-item active" onclick="applyScenario(1240,1.0,3,this)"><div><div class="sc-name">AI Recommended</div><div style="font-size:9px;color:var(--muted)">Optimal balance of revenue and waste</div></div><span class="sc-tag sct-g">Best</span></div>
+              <div class="sc-item" onclick="applyScenario(2000,1.5,5,this)"><div><div class="sc-name">Aggressive Growth</div><div style="font-size:9px;color:var(--muted)">Max stock, max revenue potential</div></div><span class="sc-tag sct-a">Moderate risk</span></div>
+              <div class="sc-item" onclick="applyScenario(600,0.6,1,this)"><div><div class="sc-name">Cash Conservation</div><div style="font-size:9px;color:var(--muted)">Minimum viable stock</div></div><span class="sc-tag sct-a">Stockout risk</span></div>
+              <div class="sc-item" onclick="applyScenario(4500,2.3,7,this)"><div><div class="sc-name">Max Buffer (No AI)</div><div style="font-size:9px;color:var(--muted)">Manual over-ordering — old way</div></div><span class="sc-tag sct-r">High waste</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h3>AI Recommendation</h3></div>
+            <div style="padding:12px 14px">
+              <div class="ai-text" style="font-size:11px;color:var(--text);line-height:1.7;border-left:2px solid var(--teal);padding-left:10px" id="pred-ai-text">At your current budget of $1,240 with AI-optimised ordering, you are in the <strong>ideal zone</strong> — 8% wastage risk, 71% storage usage, and a projected revenue of $3,240. This is the scenario the AI recommends. Do not over-order; the cold front demand spike is already factored in.</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ══ BUDGET CALCULATOR PAGE ═════════════════════════════ -->
-<div class="page" id="page-budget">
-  <div class="sec-hdr">
-    <h2>Customer ROI Calculator</h2>
-    <p>See exactly how much Prescriptix saves a real business. Adjust the sliders to match your customer's profile.</p>
-  </div>
-
-  <div class="budget-controls">
-    <h3>Business Profile</h3>
-    <div class="slider-row">
-      <span class="slider-lbl">Annual Inventory Spend</span>
-      <input type="range" min="20000" max="500000" step="5000" value="80000" id="sl-spend" oninput="calcROI()">
-      <span class="slider-val" id="out-spend">$80,000</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-lbl">Over-ordering % (waste)</span>
-      <input type="range" min="10" max="35" step="1" value="25" id="sl-waste" oninput="calcROI()">
-      <span class="slider-val" id="out-waste">25%</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-lbl">Stockout losses / year</span>
-      <input type="range" min="2000" max="80000" step="1000" value="15000" id="sl-stock" oninput="calcROI()">
-      <span class="slider-val" id="out-stock">$15,000</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-lbl">Prescriptix Tier</span>
-      <input type="range" min="0" max="3" step="1" value="2" id="sl-tier" oninput="calcROI()">
-      <span class="slider-val" id="out-tier">Growth ($99/mo)</span>
-    </div>
-  </div>
-
-  <div class="budget-results">
-    <div class="result-card"><div class="result-big" id="r-saved">$20,000</div><div class="result-lbl">Dead stock freed per year</div></div>
-    <div class="result-card"><div class="result-big" id="r-stock">$15,000</div><div class="result-lbl">Stockout losses recovered</div></div>
-    <div class="result-card highlight"><div class="result-big green" id="r-roi">29×</div><div class="result-lbl">Return on Prescriptix investment</div><div class="result-note" id="r-cost">vs. $1,188/year</div></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-hdr"><h3>Compared to Alternatives</h3></div>
-    <table>
-      <thead><tr><th>Solution</th><th>Annual Cost</th><th>Forecasting?</th><th>Availability</th><th>ROI vs this business</th></tr></thead>
-      <tbody>
-        <tr><td>Spreadsheets</td><td>$0</td><td>❌ None</td><td>When you find time</td><td>Baseline</td></tr>
-        <tr><td>Hire data analyst</td><td>$65,000+</td><td>⚠️ Manual</td><td>9-to-5 only</td><td>Negative (adds cost)</td></tr>
-        <tr><td>NetSuite / SAP</td><td>$24,000+/yr</td><td>✅ Yes</td><td>24/7</td><td>Priced out of reach</td></tr>
-        <tr class="tier-highlight"><td><strong>Prescriptix Growth</strong></td><td id="tbl-cost"><strong>$1,188/yr</strong></td><td>✅ AI-powered</td><td><strong>24/7 automated</strong></td><td id="tbl-roi"><strong style="color:#0F6E56">29× ROI</strong></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  </div><!-- end app-main -->
+</div><!-- end s-app -->
 
 <script>
-// ── NAV ──────────────────────────────────────────────────────
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  btn.classList.add('active');
-  if (id === 'revenue') initRevenueChart();
+// ── NAVIGATION ────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 's-app') { initCharts(); startClock(); }
+}
+
+function showView(id, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  const titles = {'v-dash':'Dashboard','v-inv':'Inventory & Storage','v-pred':'Smart Predictions'};
+  document.getElementById('tb-title').textContent = titles[id] || id;
+  if (id === 'v-pred') initPredChart();
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
+function doLogin() {
+  const u = document.getElementById('li-user').value.trim();
+  const p = document.getElementById('li-pass').value.trim();
+  const btn = document.getElementById('login-btn');
+  const spin = document.getElementById('login-spin');
+  const txt = document.getElementById('login-txt');
+  const err = document.getElementById('login-err');
+  err.style.display = 'none';
+  if (u === 'abc' && p === '123') {
+    txt.textContent = 'Signing in...';
+    spin.style.display = 'block';
+    btn.disabled = true;
+    setTimeout(() => { show('s-app'); btn.disabled = false; txt.textContent = 'Sign In to Dashboard'; spin.style.display = 'none'; }, 1400);
+  } else {
+    err.style.display = 'block';
+  }
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────
+function startClock() {
+  function tick() {
+    const now = new Date();
+    let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+    const am = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('tb-clock').textContent =
+      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + ' ' + am;
+  }
+  tick(); setInterval(tick, 1000);
 }
 
 // ── ORDER BUTTON ──────────────────────────────────────────────
-function markDone(btn) {
+function markOrder(btn) {
   btn.textContent = '✓ Ordered';
   btn.classList.add('done');
   btn.disabled = true;
 }
 
-// ── FORECAST ─────────────────────────────────────────────────
-const fcData = {
-  'Flu Syrup 200ml':    { h:['40%','55%','70%','100%','95%','80%','75%'], peak:'Thu–Fri', avg:12, ai:'Flu Syrup demand will spike 40% this week. A cold front arrives Thursday — historically this drives a 35–45% surge in cold medicine sales. Three nearby schools also reported illness outbreaks. You will stock out by Wednesday at current levels. Ordering 80 units now covers the next 10 days with a 15% safety buffer.', peaks:[3,4] },
-  'Paracetamol 500mg':  { h:['60%','65%','70%','75%','100%','90%','55%'], peak:'Fri', avg:9, ai:'Paracetamol usage tracks flu season closely. Demand peaks Friday as weekend buyers stock up. At 12 remaining units you have 1.3 days of stock left. Ordering 120 units provides a 14-day supply with a 20% safety margin.', peaks:[4] },
-  'Vitamin C 1000mg':   { h:['50%','50%','55%','50%','60%','45%','50%'], peak:'Steady', avg:5, ai:'Vitamin C demand is stable and low-variance. Your current 140 units covers 28 days at this rate. No reorder needed this week. The AI will re-evaluate in 14 days and alert you if the pattern changes.', peaks:[] },
-  'Cough Tabs 10-strip':{ h:['55%','60%','75%','90%','100%','85%','70%'], peak:'Thu–Fri', avg:10, ai:'Cough Tabs closely correlate with cold/flu medicine surges. With only 2 units remaining and peak demand arriving Thursday, you will stock out within 5 hours of opening tomorrow. Order 90 units immediately — this is a same-day priority.', peaks:[3,4] },
+// ── FORECAST CHART ────────────────────────────────────────────
+let fcChartInst = null;
+const fcDatasets = {
+  'Flu Syrup 200ml':    [5,7,9,18,17,14,13],
+  'Paracetamol 500mg':  [8,9,10,11,15,13,7],
+  'Cough Tabs':         [7,8,10,13,15,12,10],
 };
-function updateForecast() {
-  const key = document.getElementById('prodSel').value;
-  const d = fcData[key];
-  const bars = document.querySelectorAll('#fc-bars .fc-bar');
-  bars.forEach((b, i) => {
-    b.style.height = d.h[i];
-    b.className = 'fc-bar' + (d.peaks.includes(i) ? ' peak' : '');
-  });
-  document.getElementById('fc-label').textContent = 'Peak demand: ' + d.peak + ' · Avg ' + d.avg + ' units/day';
-  document.getElementById('ai-text').textContent = d.ai;
-}
-
-// ── REVENUE CHART ─────────────────────────────────────────────
-let revenueChartInstance = null;
-function initRevenueChart() {
-  if (revenueChartInstance) return;
-  const ctx = document.getElementById('revenueChart').getContext('2d');
-  revenueChartInstance = new Chart(ctx, {
+function initCharts() {
+  if (fcChartInst) return;
+  const ctx = document.getElementById('fcChart').getContext('2d');
+  fcChartInst = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Year 1', 'Year 2', 'Year 3'],
+      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets: [{
+        label: 'Predicted Units',
+        data: fcDatasets['Flu Syrup 200ml'],
+        backgroundColor: ['#E1F5EE','#E1F5EE','#E1F5EE','#FCEBEB','#FCEBEB','#E1F5EE','#E1F5EE'],
+        borderColor: ['#00b4a0','#00b4a0','#00b4a0','#E24B4A','#E24B4A','#00b4a0','#00b4a0'],
+        borderWidth: 1.5, borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { ticks: { font: { size: 9 } }, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { ticks: { font: { size: 9 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function updateChart(prod) {
+  if (!fcChartInst) return;
+  const d = fcDatasets[prod] || fcDatasets['Flu Syrup 200ml'];
+  const max = Math.max(...d);
+  fcChartInst.data.datasets[0].data = d;
+  fcChartInst.data.datasets[0].backgroundColor = d.map(v => v === max ? '#FCEBEB' : '#E1F5EE');
+  fcChartInst.data.datasets[0].borderColor = d.map(v => v === max ? '#E24B4A' : '#00b4a0');
+  fcChartInst.update();
+}
+
+// ── PREDICTION CHART ──────────────────────────────────────────
+let predChartInst = null;
+function initPredChart() {
+  if (predChartInst) return;
+  const ctx = document.getElementById('predChart').getContext('2d');
+  predChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
       datasets: [
-        { label: 'Revenue', data: [108, 420, 1190], backgroundColor: '#86001f', borderRadius: 4 },
-        { label: 'Gross Profit', data: [72, 280, 975], backgroundColor: '#c49729', borderRadius: 4, opacity: .85 }
+        { label: 'Revenue', data: [3240,3400,3100,3600,3800,3500,4200,4500,4100,4400,4700,5000], borderColor: '#00b4a0', backgroundColor: 'rgba(0,180,160,.08)', tension: .4, fill: true, borderWidth: 2 },
+        { label: 'Wastage Cost', data: [260,270,240,290,310,280,340,360,328,352,376,400], borderColor: '#E24B4A', backgroundColor: 'rgba(226,75,74,.06)', tension: .4, fill: true, borderWidth: 1.5, borderDash: [4,3] }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { ticks: { callback: v => '$' + v + 'K', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,.06)' } },
-        x: { ticks: { font: { size: 11, weight: '500' } }, grid: { display: false } }
+        y: { ticks: { callback: v => '$' + v.toLocaleString(), font: { size: 9 } }, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { ticks: { font: { size: 9 } }, grid: { display: false } }
       }
     }
   });
 }
 
-// ── ROI CALCULATOR ────────────────────────────────────────────
-const tierNames = ['Freemium ($0/mo)', 'Basic ($19/mo)', 'Growth ($99/mo)', 'Premium ($249/mo)'];
-const tierCosts = [0, 228, 1188, 2988];
-function calcROI() {
-  const spend = +document.getElementById('sl-spend').value;
-  const waste = +document.getElementById('sl-waste').value;
-  const stock = +document.getElementById('sl-stock').value;
-  const tier  = +document.getElementById('sl-tier').value;
-  const saved = Math.round(spend * waste / 100);
-  const total = saved + stock;
-  const cost  = tierCosts[tier];
-  const roi   = cost > 0 ? Math.round(total / cost) : '∞';
-  document.getElementById('out-spend').textContent = '$' + spend.toLocaleString();
-  document.getElementById('out-waste').textContent = waste + '%';
-  document.getElementById('out-stock').textContent = '$' + stock.toLocaleString();
-  document.getElementById('out-tier').textContent = tierNames[tier];
-  document.getElementById('r-saved').textContent = '$' + saved.toLocaleString();
-  document.getElementById('r-stock').textContent = '$' + stock.toLocaleString();
-  document.getElementById('r-roi').textContent = roi + '×';
-  document.getElementById('r-cost').textContent = 'vs. $' + cost.toLocaleString() + '/year';
-  document.getElementById('tbl-cost').innerHTML = '<strong>$' + cost.toLocaleString() + '/yr</strong>';
-  document.getElementById('tbl-roi').innerHTML = '<strong style="color:#0F6E56">' + roi + '× ROI</strong>';
+// ── PREDICTION SLIDERS ────────────────────────────────────────
+const scenarios = [
+  { budget: 1240, qty: 1.0, lead: 3 },
+  { budget: 2000, qty: 1.5, lead: 5 },
+  { budget: 600,  qty: 0.6, lead: 1 },
+  { budget: 4500, qty: 2.3, lead: 7 },
+];
+
+function applyScenario(budget, qty, lead, el) {
+  document.querySelectorAll('.sc-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sl-budget').value = budget;
+  document.getElementById('sl-qty').value = qty;
+  document.getElementById('sl-lead').value = lead;
+  updatePred();
 }
-calcROI();
+
+function updatePred() {
+  const budget = +document.getElementById('sl-budget').value;
+  const qty    = +document.getElementById('sl-qty').value;
+  const lead   = +document.getElementById('sl-lead').value;
+
+  document.getElementById('out-budget').textContent = '$' + budget.toLocaleString();
+  document.getElementById('out-qty').textContent = qty.toFixed(1) + '× ' + (qty === 1.0 ? '(AI optimal)' : qty < 1 ? '(conservative)' : '(aggressive)');
+  document.getElementById('out-lead').textContent = lead + ' day' + (lead !== 1 ? 's' : '');
+
+  const baseRev = 2900;
+  const revenue = Math.round(baseRev * (1 + (budget - 1240) / 8000) * qty);
+  const wastage = Math.min(85, Math.round(4 + (qty - 1) * 22 + Math.max(0, budget - 2500) / 150));
+  const storage = Math.min(102, Math.round(71 + (qty - 1) * 28 + (budget - 1240) / 200));
+  const roi = +(Math.max(2, 18 - (qty - 1) * 8 - wastage * 0.15)).toFixed(1);
+
+  document.getElementById('r-rev').textContent = '$' + revenue.toLocaleString();
+  document.getElementById('r-waste').textContent = wastage + '%';
+  document.getElementById('r-stor').textContent = storage + '%';
+  document.getElementById('r-roi').textContent = roi + '×';
+
+  const revCard = document.getElementById('pr-rev');
+  const wasteCard = document.getElementById('pr-waste');
+  const storCard = document.getElementById('pr-stor');
+  const roiCard = document.getElementById('pr-roi');
+  const revEl = document.getElementById('r-rev');
+  const wasteEl = document.getElementById('r-waste');
+  const storEl = document.getElementById('r-stor');
+  const roiEl = document.getElementById('r-roi');
+
+  revEl.className = 'pr-big ' + (revenue > 3000 ? 'green' : revenue > 2000 ? '' : 'red');
+  wasteEl.className = 'pr-big ' + (wastage < 15 ? 'green' : wastage < 35 ? 'amber' : 'red');
+  storEl.className = 'pr-big ' + (storage < 85 ? 'green' : storage < 95 ? 'amber' : 'red');
+  roiEl.className = 'pr-big ' + (roi > 8 ? 'green' : roi > 4 ? 'amber' : 'red');
+
+  wasteCard.className = 'pr-card ' + (wastage < 15 ? 'good' : wastage < 35 ? 'warn' : 'danger');
+  storCard.className = 'pr-card ' + (storage < 85 ? '' : storage < 95 ? 'warn' : 'danger');
+
+  document.getElementById('r-rev-n').textContent = revenue > 3000 ? '+' + Math.round((revenue/2900-1)*100) + '% vs baseline' : 'Below baseline';
+  document.getElementById('r-waste-n').textContent = wastage < 15 ? 'Low — AI optimised' : wastage < 35 ? 'Moderate — monitor' : 'High — reduce order';
+  document.getElementById('r-stor-n').textContent = storage < 85 ? 'Safe zone' : storage < 95 ? 'Near capacity — caution' : 'OVER CAPACITY!';
+  document.getElementById('r-roi-n').textContent = roi > 8 ? 'Excellent return' : roi > 4 ? 'Moderate return' : 'Poor — reconsider';
+
+  const aiTexts = {
+    good: `At $${budget.toLocaleString()} with ${qty.toFixed(1)}× ordering, you are in the <strong>ideal zone</strong> — ${wastage}% wastage risk, ${storage}% storage usage, and a projected revenue of $${revenue.toLocaleString()}. The AI recommends staying close to this configuration.`,
+    overstock: `Warning: at ${qty.toFixed(1)}× ordering, your storage will reach <strong>${storage}% capacity</strong> — very little room for emergency stock. Wastage risk jumps to <strong>${wastage}%</strong>. The AI recommends reducing to 1.0–1.2× unless you have confirmed bulk demand.`,
+    understock: `At ${qty.toFixed(1)}× ordering with only $${budget.toLocaleString()} budget, you risk <strong>stockouts on 3 critical items</strong> within the week. The cold front arrives Thursday — under-stocking now will cost more in lost sales than the saving on orders. Increase budget or quantity.`,
+  };
+  const scenario = storage > 95 || wastage > 30 ? 'overstock' : budget < 700 ? 'understock' : 'good';
+  document.getElementById('pred-ai-text').innerHTML = aiTexts[scenario];
+
+  // update chart
+  if (predChartInst) {
+    predChartInst.data.datasets[0].data = [3240,3400,3100,3600,3800,3500,4200,4500,4100,4400,4700,5000].map(v => Math.round(v * (revenue / 3240)));
+    predChartInst.data.datasets[1].data = [260,270,240,290,310,280,340,360,328,352,376,400].map(v => Math.round(v * (wastage / 8)));
+    predChartInst.update();
+  }
+}
 </script>
 </body>
 </html>
